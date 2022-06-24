@@ -1,5 +1,7 @@
 let cadastrarNome = prompt("Qual é seu nome?");
 let mensagens = [];
+let cont = 0;
+let cont2 = 0;
 login();
 // Login no Batepapo OUL
 function login() {
@@ -21,7 +23,10 @@ function loginFail(erro) {
   cadastrarNome = prompt("Qual é seu nome?");
 }
 //---------------------------------------------------------------
-setTimeout(searchMessages, 500);
+setTimeout(searchMessages, 200);
+setInterval(searchMessages, 3000);
+// setInterval(cleanMessages,3000)
+// setInterval(cleanMessages,6000)
 // Enviar Mensagem
 function sendMessage() {
   const messageToSend = document.querySelector(".msg");
@@ -41,7 +46,9 @@ function sendMessage() {
   promise.catch(messageFail);
 }
 function messageSucess() {
+  searchMessages()
   console.log(`sua mensagem  foi enviada com sucesso`);
+  document.querySelector(".msg").value = "";
 }
 function messageFail(erro) {
   console.log(`Deu erro na tua mensagem: ${erro.response.status}`);
@@ -84,6 +91,10 @@ function messageNotArrived(error) {
   console.log("Erro no carregamento das mensagems");
 }
 function renderMessages(mensagens) {
+  cont++;
+  if (cont !== cont2) {
+    document.querySelector(".chat").innerText = ""
+  }
   let div = document.querySelector(".chat");
   for (let i = 0; i < mensagens.length; i++) {
     if (mensagens[i].type == "status") {
@@ -95,13 +106,42 @@ function renderMessages(mensagens) {
     }
     lastMessage();
   }
+ cont2 = cont
 }
 function lastMessage() {
-    const element = document.querySelector(".chat").lastElementChild
-    element.scrollIntoView()
+  const element = document.querySelector(".chat").lastElementChild;
+  element.scrollIntoView();
+}
+function cleanMessages() {
+  const messages1 = (document.querySelector(`.log-${cont}`));
+  const messages2 = (document.querySelector(`.message-${cont}`));
+  const messages3 = (document.querySelector(`.private-message${cont}`));
+  if (messages1 !== null) {
+    messages1.innerText = ""
+  }else if(messages2 !== null){
+    messages2.innerText = ""
+  }else if(messages3 !== nul){
+    messages3.innerText = ""
+  }
+//   console.log(messages)
+  console.log("caiu aqui");
+//   messages.innerText = "";
 }
 //---------------------------------------------------------------
-
 // Procurar Participantes
-
+function findPeople() {
+  const promisse = axios.get(
+    "https://mock-api.driven.com.br/api/v6/uol/participants"
+  );
+  promisse.then(foundIt);
+  promisse.catch(notFoundIt);
+}
+function foundIt(dados) {
+  const participants = dados.data;
+  console.log(dados);
+  console.log(participants);
+}
+function notFoundIt() {
+  console.log("Não deu certo ):");
+}
 //---------------------------------------------------------------

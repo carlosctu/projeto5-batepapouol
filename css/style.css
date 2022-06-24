@@ -19,15 +19,23 @@ body {
   align-items: center;
   justify-content: space-between;
 }
-.header div > img {
+.header div img {
   width: 75px;
   height: 53px;
   margin-left: 22px;
 }
-.header div > ion-icon {
+.header button ion-icon {
   width: 42.19px;
   height: 30.94px;
   margin-right: 22px;
+}
+.header button{
+    border: none;
+    background: transparent;
+    outline: none;
+    width: 75px;
+    height: 53px;
+    margin-left: 22px;
 }
 
 .chat {
@@ -63,13 +71,6 @@ body {
   background-color: #ffffff;
   margin-bottom: 4px;
 }
-/* .message > div {
-  display: flex;
-  flex-wrap: wrap;
-  width: 100%;
-  overflow: hidden;
-  /* white-space: nowrap; */
-  /* text-overflow: ellipsis; */
 
 .private-message {
   display: flex;

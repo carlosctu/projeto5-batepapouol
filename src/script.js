@@ -16,17 +16,16 @@ function login() {
   promise.catch(loginFail);
 }
 function loginSucess() {
+  setTimeout(searchMessages, 200);
   setInterval(enableConnection, 5000);
-  //   setInterval(searchMessages, 5000);
+  console.log("Caiu aqui")
 }
 function loginFail(erro) {
   cadastrarNome = prompt("Qual é seu nome?");
 }
 //---------------------------------------------------------------
-setTimeout(searchMessages, 200);
+
 setInterval(searchMessages, 3000);
-// setInterval(cleanMessages,3000)
-// setInterval(cleanMessages,6000)
 // Enviar Mensagem
 function sendMessage() {
   const messageToSend = document.querySelector(".msg");
@@ -72,6 +71,7 @@ function connectionEnable() {
 }
 function connectionDisable() {
   console.log("Erro na tentativa de conexão");
+  window.location.reload()
 }
 //---------------------------------------------------------------
 
@@ -85,6 +85,7 @@ function searchMessages() {
 }
 function messageArrived(dados) {
   mensagens = dados.data;
+  console.log(mensagens)
   renderMessages(mensagens);
 }
 function messageNotArrived(error) {
@@ -102,11 +103,15 @@ function renderMessages(mensagens) {
     } else if (mensagens[i].type == "message") {
       div.innerHTML += `<div class="message"><p class="hour">(${mensagens[i].time})</p>&nbsp&nbsp<p class="user">${mensagens[i].from}</p>&nbsp&nbsp<p>para</p>&nbsp&nbsp<p class="user">${mensagens[i].to}:</p>&nbsp&nbsp<div><p>${mensagens[i].text}</p><div/></div>`;
     } else if (mensagens[i].type == "private_message") {
-      div.innerHTML += `<div class="private-message"><p class="hour">(${mensagens[i].time})</p>&nbsp&nbsp<p class="user">${mensagens[i].from}</p>&nbsp&nbsp<p>para</p>&nbsp&nbsp<p class="user">${mensagens[i].to}:</p>&nbsp&nbsp<p>${mensagens[i].text}</p></div>`;
+      if (cadastrarNome == mensagens[i].to) {
+        console.log(cadastrarNome)
+        console.log(mensagens[i].to)
+        div.innerHTML += `<div class="private-message"><p class="hour">(${mensagens[i].time})</p>&nbsp&nbsp<p class="user">${mensagens[i].from}</p>&nbsp&nbsp<p>para</p>&nbsp&nbsp<p class="user">${mensagens[i].to}:</p>&nbsp&nbsp<p>${mensagens[i].text}</p></div>`;
+      }
     }
     lastMessage();
   }
- cont2 = cont
+  cont2 = cont
 }
 function lastMessage() {
   const element = document.querySelector(".chat").lastElementChild;
@@ -118,14 +123,12 @@ function cleanMessages() {
   const messages3 = (document.querySelector(`.private-message${cont}`));
   if (messages1 !== null) {
     messages1.innerText = ""
-  }else if(messages2 !== null){
+  } else if (messages2 !== null) {
     messages2.innerText = ""
-  }else if(messages3 !== nul){
+  } else if (messages3 !== nul) {
     messages3.innerText = ""
   }
-//   console.log(messages)
   console.log("caiu aqui");
-//   messages.innerText = "";
 }
 //---------------------------------------------------------------
 // Procurar Participantes

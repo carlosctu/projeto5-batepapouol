@@ -2,6 +2,8 @@ let cadastrarNome = prompt("Qual é seu nome?");
 let mensagens = [];
 let cont = 0;
 let cont2 = 0;
+let receiver = "Todos"
+let typeMessage = "message"
 login();
 // Login no Batepapo OUL
 function login() {
@@ -20,17 +22,9 @@ function login() {
     cadastrarNome = prompt("Qual é seu nome?")
   });
 }
-// function loginSucess() {
-//   setTimeout(searchMessages, 200);
-//   setInterval(enableConnection, 5000);
-//   console.log("Caiu aqui")
-// }
-// function loginFail(erro) {
-//   cadastrarNome = prompt("Qual é seu nome?");
-// }
 //---------------------------------------------------------------
-
 setInterval(searchMessages, 3000);
+
 // Enviar Mensagem
 function sendMessage() {
   const messageToSend = document.querySelector(".msg");
@@ -39,9 +33,9 @@ function sendMessage() {
   }
   const message = {
     from: cadastrarNome,
-    to: "Todos",
+    to: receiver,
     text: messageToSend.value,
-    type: "message",
+    type: typeMessage,
   };
   const promise = axios.post(
     "https://mock-api.driven.com.br/api/v6/uol/messages",
@@ -53,14 +47,7 @@ function sendMessage() {
   });
   promise.catch(() => console.log(`Deu erro na tua mensagem: ${erro.response.status}`));
 }
-// function messageSucess() {
-//   searchMessages()
-//   console.log(`sua mensagem  foi enviada com sucesso`);
-//   document.querySelector(".msg").value = "";
-// }
-// function messageFail(erro) {
-//   console.log(`Deu erro na tua mensagem: ${erro.response.status}`);
-// }
+
 //---------------------------------------------------------------
 
 // Manter Conexão
@@ -78,13 +65,7 @@ function enableConnection() {
     window.location.reload()
   });
 }
-// function connectionEnable() {
-//   console.log("Conexão mantida");
-// }
-// function connectionDisable() {
-//   console.log("Erro na tentativa de conexão");
-//   window.location.reload()
-// }
+
 //---------------------------------------------------------------
 
 // Procurar Mensagens
@@ -98,14 +79,7 @@ function searchMessages() {
   });
   promisse.catch(() => console.log("Erro no carregamento das mensages"));
 }
-// function messageArrived(dados) {
-//   mensagens = dados.data;
-//   console.log(mensagens)
-//   renderMessages(mensagens);
-// }
-// function messageNotArrived(error) {
-//   console.log("Erro no carregamento das mensagems");
-// }
+
 function renderMessages(mensagens) {
   cont++;
   if (cont !== cont2) {
@@ -119,8 +93,6 @@ function renderMessages(mensagens) {
       div.innerHTML += `<div class="message"><p class="hour">(${mensagens[i].time})</p>&nbsp&nbsp<p class="user">${mensagens[i].from}</p>&nbsp&nbsp<p>para</p>&nbsp&nbsp<p class="user">${mensagens[i].to}:</p>&nbsp&nbsp<div><p>${mensagens[i].text}</p><div/></div>`;
     } else if (mensagens[i].type == "private_message") {
       if (cadastrarNome == mensagens[i].to) {
-        // console.log(cadastrarNome)
-        // console.log(mensagens[i].to)
         div.innerHTML += `<div class="private-message"><p class="hour">(${mensagens[i].time})</p>&nbsp&nbsp<p class="user">${mensagens[i].from}</p>&nbsp&nbsp<p>para</p>&nbsp&nbsp<p class="user">${mensagens[i].to}:</p>&nbsp&nbsp<p>${mensagens[i].text}</p></div>`;
       }
     }
@@ -130,7 +102,9 @@ function renderMessages(mensagens) {
 }
 function lastMessage() {
   const element = document.querySelector(".chat").lastElementChild;
-  element.scrollIntoView();
+  if (element !== null) {
+    element.scrollIntoView();
+  }
 }
 function cleanMessages() {
   const messages1 = (document.querySelector(`.log-${cont}`));
@@ -147,7 +121,6 @@ function cleanMessages() {
 //---------------------------------------------------------------
 // Procurar Participantes
 function findPeople() {
-  console.log("caiu aqui")
   const availableUsers = document.querySelector(".available-users")
   const promisse = axios.get(
     "https://mock-api.driven.com.br/api/v6/uol/participants"
@@ -155,28 +128,26 @@ function findPeople() {
   promisse.then(dados => { 
     const participants = dados.data
     for (let i = 0; i < participants.length; i++) {
-      availableUsers.innerHTML += `<div><button onclick="selectedPerson(this)"><ion-icon name="person-circle"></ion-icon><p>${participants[i].name}</p></button></div>` 
+      availableUsers.innerHTML += `<div><button onclick="selectedPerson(this)"><ion-icon name="person-circle"></ion-icon><p>${participants[i].name}</p></button></div>`
     }
   });
   promisse.catch(() => console.log("Não foi possivel localizar pessoas"));
 }
-//   function foundIt(dados) {
-//     const participants = dados.data;
-// }
-// function notFoundIt() {
-//   console.log("Não deu certo ):");
-// }
 //---------------------------------------------------------------
 // Escolher pessoas
 function selectedPerson(person) {
   console.log(person)
+  console.log(person)
   let checkSelectedPerson = document.querySelector(".available-users .check")
   if (checkSelectedPerson == null || checkSelectedPerson == "") {
-    person.innerHTML += `<ion-icon class="check" name="checkmark-outline" style="color:green"></ion-icon>`
+    person.innerHTML += `<ion-icon class="check person" name="checkmark-outline" style="color:green"></ion-icon>`
   }else{
     checkSelectedPerson.remove()
-    person.innerHTML += `<ion-icon class="check" name="checkmark-outline" style="color:green"></ion-icon>`
+    person.innerHTML += `<ion-icon class="check person" name="checkmark-outline" style="color:green"></ion-icon>`
   }
+  const ppl = document.querySelector(".available-users .check").parentNode
+  receiver = ppl.querySelector("p").innerHTML
+  console.log(receiver)
 }
 //---------------------------------------------------------------
 // sideBar
@@ -194,20 +165,23 @@ function closeSideBar() {
   document.querySelector("body").classList.remove("no-scroll")
 }
 // Mostrar participantes
+let checkPublic = ""
+let checkPrivate = ""
 
 // Logica dos checks do side bar
 function enableCheck(element) {
-  const checkPublic = document.querySelector(".public .check")
-  const checkPrivate = document.querySelector(".private .check")
+   checkPublic = document.querySelector(".public .check")
+   checkPrivate = document.querySelector(".private .check")
   if (checkPublic == null && checkPrivate == null) {
     element.innerHTML += `<ion-icon class="check" name="checkmark-outline" style="color:green"></ion-icon>`
   } else if ((checkPublic !== null && checkPrivate == null)) {
     checkPublic.remove()
+    typeMessage ="private_message"
     element.innerHTML += `<ion-icon class="check" name="checkmark-outline" style="color:green"></ion-icon>`
   } else if ((checkPublic == null && checkPrivate !== null)) {
     checkPrivate.remove()
+    typeMessage ="message"
     element.innerHTML += `<ion-icon class="check" name="checkmark-outline" style="color:green"></ion-icon>`
-
   }
 }
 //---------------------------------------------------------------

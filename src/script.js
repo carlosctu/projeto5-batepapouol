@@ -4,6 +4,7 @@ let cont = 0;
 let cont2 = 0;
 let receiver = "Todos"
 let typeMessage = "message"
+// const message = {}
 login();
 // Login no Batepapo OUL
 function login() {
@@ -28,7 +29,7 @@ setInterval(searchMessages, 3000);
 // Enviar Mensagem
 function sendMessage() {
   const messageToSend = document.querySelector(".msg");
-  if (messageToSend.value == null  || messageToSend.value == "") {
+  if (messageToSend.value == null || messageToSend.value == "") {
     return
   }
   const message = {
@@ -92,7 +93,7 @@ function renderMessages(mensagens) {
     } else if (mensagens[i].type == "message") {
       div.innerHTML += `<div class="message"><p class="hour">(${mensagens[i].time})</p>&nbsp&nbsp<p class="user">${mensagens[i].from}</p>&nbsp&nbsp<p>para</p>&nbsp&nbsp<p class="user">${mensagens[i].to}:</p>&nbsp&nbsp<div><p>${mensagens[i].text}</p><div/></div>`;
     } else if (mensagens[i].type == "private_message") {
-      if (cadastrarNome == mensagens[i].to) {
+      if ((cadastrarNome == mensagens[i].to) ) {
         div.innerHTML += `<div class="private-message"><p class="hour">(${mensagens[i].time})</p>&nbsp&nbsp<p class="user">${mensagens[i].from}</p>&nbsp&nbsp<p>para</p>&nbsp&nbsp<p class="user">${mensagens[i].to}:</p>&nbsp&nbsp<p>${mensagens[i].text}</p></div>`;
       }
     }
@@ -125,7 +126,7 @@ function findPeople() {
   const promisse = axios.get(
     "https://mock-api.driven.com.br/api/v6/uol/participants"
   );
-  promisse.then(dados => { 
+  promisse.then(dados => {
     const participants = dados.data
     for (let i = 0; i < participants.length; i++) {
       availableUsers.innerHTML += `<div><button onclick="selectedPerson(this)"><ion-icon name="person-circle"></ion-icon><p>${participants[i].name}</p></button></div>`
@@ -141,7 +142,7 @@ function selectedPerson(person) {
   let checkSelectedPerson = document.querySelector(".available-users .check")
   if (checkSelectedPerson == null || checkSelectedPerson == "") {
     person.innerHTML += `<ion-icon class="check person" name="checkmark-outline" style="color:green"></ion-icon>`
-  }else{
+  } else {
     checkSelectedPerson.remove()
     person.innerHTML += `<ion-icon class="check person" name="checkmark-outline" style="color:green"></ion-icon>`
   }
@@ -155,7 +156,7 @@ const sideBar = document.querySelector(".find-users")
 const check = document.querySelector(".check")
 let loadPeople
 function showSideBar() {
-  loadPeople = setInterval(findPeople,10000)
+  loadPeople = setInterval(findPeople, 10000)
   sideBar.classList.remove("hidden")
   document.querySelector("body").classList.add("no-scroll")
 }
@@ -170,17 +171,17 @@ let checkPrivate = ""
 
 // Logica dos checks do side bar
 function enableCheck(element) {
-   checkPublic = document.querySelector(".public .check")
-   checkPrivate = document.querySelector(".private .check")
+  checkPublic = document.querySelector(".public .check")
+  checkPrivate = document.querySelector(".private .check")
   if (checkPublic == null && checkPrivate == null) {
     element.innerHTML += `<ion-icon class="check" name="checkmark-outline" style="color:green"></ion-icon>`
   } else if ((checkPublic !== null && checkPrivate == null)) {
     checkPublic.remove()
-    typeMessage ="private_message"
+    typeMessage = "private_message"
     element.innerHTML += `<ion-icon class="check" name="checkmark-outline" style="color:green"></ion-icon>`
   } else if ((checkPublic == null && checkPrivate !== null)) {
     checkPrivate.remove()
-    typeMessage ="message"
+    typeMessage = "message"
     element.innerHTML += `<ion-icon class="check" name="checkmark-outline" style="color:green"></ion-icon>`
   }
 }

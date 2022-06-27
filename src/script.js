@@ -147,21 +147,17 @@ function cleanMessages() {
 //---------------------------------------------------------------
 // Procurar Participantes
 function findPeople() {
+  console.log("caiu aqui")
   const availableUsers = document.querySelector(".available-users")
   const promisse = axios.get(
     "https://mock-api.driven.com.br/api/v6/uol/participants"
   );
   promisse.then(dados => { 
     const participants = dados.data
-    console.log(participants)
-    console.log(participants.name)
     for (let i = 0; i < participants.length; i++) {
-      console.log(participants[i].name)
-      console.log("caiuaqui ")
-      availableUsers.innerHTML += `<div><ion-icon name="person-circle"></ion-icon><p>${participants[i].name}</p></div>` 
+      availableUsers.innerHTML += `<div><button onclick="selectedPerson(this)"><ion-icon name="person-circle"></ion-icon><p>${participants[i].name}</p></button></div>` 
     }
   });
-  
   promisse.catch(() => console.log("Não foi possivel localizar pessoas"));
 }
 //   function foundIt(dados) {
@@ -171,15 +167,29 @@ function findPeople() {
 //   console.log("Não deu certo ):");
 // }
 //---------------------------------------------------------------
+// Escolher pessoas
+function selectedPerson(person) {
+  console.log(person)
+  let checkSelectedPerson = document.querySelector(".available-users .check")
+  if (checkSelectedPerson == null || checkSelectedPerson == "") {
+    person.innerHTML += `<ion-icon class="check" name="checkmark-outline" style="color:green"></ion-icon>`
+  }else{
+    checkSelectedPerson.remove()
+    person.innerHTML += `<ion-icon class="check" name="checkmark-outline" style="color:green"></ion-icon>`
+  }
+}
+//---------------------------------------------------------------
 // sideBar
 const sideBar = document.querySelector(".find-users")
 const check = document.querySelector(".check")
-
+let loadPeople
 function showSideBar() {
+  loadPeople = setInterval(findPeople,10000)
   sideBar.classList.remove("hidden")
   document.querySelector("body").classList.add("no-scroll")
 }
 function closeSideBar() {
+  clearInterval(loadPeople)
   sideBar.classList.add("hidden")
   document.querySelector("body").classList.remove("no-scroll")
 }

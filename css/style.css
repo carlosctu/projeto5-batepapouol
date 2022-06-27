@@ -212,7 +212,16 @@ body {
 }
 .available-users > div{
   display: flex;
+  align-items: center;
   margin-bottom: 18px;
+}
+
+.available-users button {
+  display: flex;
+  align-items: center;
+  border: none;
+  background: transparent;
+  outline: none;
 }
 
 .message-visibility ion-icon {
